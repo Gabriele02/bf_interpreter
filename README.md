@@ -4,7 +4,7 @@
 # Story
 Some time ago, I was surfing the internet, minding my own buisiness when I stumbled across this strange language: BrainFuck.
 At first I was scared by it's appearence but, as I started to dig deeper on how it works, I found my self more and more comfortable with it. 
-I thought that to fully understand how this crazy thing wroks I should have wrote an interpreter for it, so here we are, I present to you BfInterpreter!
+I thought that to fully understand how this crazy thing works I should have wrote an interpreter for it, so here we are, I present to you BfInterpreter!
 
 # Features
 - Interactive mode

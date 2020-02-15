@@ -57,6 +57,7 @@ void DynamicArrayFill(DynamicArray *a, int from, int to, int val){
     for(i = from; i < to; i++)
         a->content[i] = val;
 }
+
 /*
 Frees the DynamicArray
 O: a DynamicArray to free

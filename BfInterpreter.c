@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
+#include <stdbool.h>
+#include "DynamicArray.h"
 #include "BfInterpreter.h"
 
 int consoleMode = true;
@@ -43,13 +45,13 @@ int main(int argc, char **argv){
 
         if(toExec){
             purify(toExec);
-            if(argc >= 3){
+            /*if(argc >= 3){
                 FILE *fp = fopen("intext.txt", "w");
                 if (fp != NULL){
                     fputs(toExec, fp);
                     fclose(fp);
                 }
-            }
+            }*/
             return execute(toExec);
         }
     }

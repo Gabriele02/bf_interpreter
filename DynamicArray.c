@@ -7,7 +7,7 @@ I: def default value of all the array's elements
 */
 void DynamicArrayInit(DynamicArray *a, int def){
     a->size = DEFAULT_ARRAYLIST_SIZE;
-    a->content = malloc(a->size * sizeof(int));
+    a->content = calloc(a->size, sizeof(int));
     if(def)
         DynamicArrayFill(a, 0, a->size, def);
 }
@@ -65,4 +65,5 @@ O: a DynamicArray to free
 void freeDynamicArray(DynamicArray *a){
     free(a->content);
     a->content = NULL;
+    a->size = 0;
 }

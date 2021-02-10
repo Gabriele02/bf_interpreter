@@ -1,0 +1,13 @@
+#ifndef _ERRORS
+#define _ERRORS
+
+#define EXECUTION_OK 1
+#define EXECUTION_END 0
+#define UNKNOWN_COMMAND -1
+#define MISSING_OPEN_BRACKET -2
+#define MISSING_CLOSE_BRACKET -3
+#define FILE_NOT_FOUND -4
+#define GENERAL_ERROR -5
+#define TOO_FEW_ARGS -6
+
+#endif

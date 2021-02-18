@@ -109,13 +109,13 @@ int compile(const char *completeInst, compiled_code_t *compiledCode){
             case '>':
             case '<':{
                 uint16_t reps = 1;
-                calc_memIndex(inst, &memIndex);
+                //calc_memIndex(inst, &memIndex);
                 while(instIndex < instLen - 1 && completeInst[instIndex + 1] == inst && reps < 256){
                     reps++;
                     instIndex++;
-                    calc_memIndex(inst, &memIndex);
+                    //calc_memIndex(inst, &memIndex);
                 }
-                chk_memIndex(memIndex);
+                //chk_memIndex(memIndex, instIndex);
                 copyToCompiled(compiledCode, reps, inst);
                 break;
             }
@@ -234,11 +234,11 @@ inline void calc_memIndex(char inst, int *memIndex){
             break;
     }
 }
-
-inline void chk_memIndex(int memIndex){
+/*
+inline void chk_memIndex(int memIndex, long long instIndex){
     if(memIndex < 0){
-        printf("Waring: memory index is < than 0. Behaviour is undefined.\n");
+        printf("Waring: memory index (%d) is < than 0. Behaviour is undefined. Character %d\n", memIndex, instIndex);
     }else if(memIndex >= MEM_SIZE){
-        printf("Waring: memory index is >= MEM_SIZE (%d). Behaviour is undefined.\n", MEM_SIZE);
+        printf("Waring: memory index (%d) is >= MEM_SIZE (%d). Behaviour is undefined. Character: %d\n", memIndex, MEM_SIZE, instIndex);
     }
-}
+}*/

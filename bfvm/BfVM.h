@@ -5,8 +5,9 @@
 #include "../Errors.h"
 
 #define MEM_SIZE 30000
+#define DEBUGGING_MODE 1
 
-/*void printMem    ();*/
+void printMem    ();
 /*int  debug       (const char*, size_t);*/
 int  findClosing (const compiled_code_t*, int);
 int  execute     (const compiled_code_t*);

@@ -7,6 +7,12 @@
 void InstructionsInit(compiled_code_t *compiledCode){
     compiledCode->length = 0;
     compiledCode->instructions = calloc(MAX_INST_SIZE, sizeof(instruction_t));
+    
+    if(!compiledCode->instructions){
+        printf("Unable to allocate memory: tryed to allocate %d bytes", MAX_INST_SIZE * sizeof(instruction_t));
+        exit(GENERAL_ERROR);
+    }
+
     int i;
     for(i = 0; i < MAX_INST_SIZE; i++){
         compiledCode->instructions[i].instruction = INSTRUCTION_UNDEFINED;
@@ -38,22 +44,23 @@ inline void addInstruction(compiled_code_t *compiledCode, instruction_t inst){
 }
 
 void resetCode(compiled_code_t *compiledCode){
-    uint32_t i;
-    for(i = 0; i < compiledCode->length; i++){
-        while(compiledCode->instructions[i].instruction != INSTRUCTION_UNDEFINED){
-            compiledCode->instructions[i].times = 0;
-            compiledCode->instructions[i].instruction = INSTRUCTION_NOP;
-        }
-        compiledCode->length = 0;
+    uint64_t i = 0;
+    while(compiledCode->instructions[i].instruction != INSTRUCTION_UNDEFINED){
+        compiledCode->instructions[i].times = 0;
+        compiledCode->instructions[i].instruction = INSTRUCTION_NOP;
+        i++;
     }
+    compiledCode->length = 0;
 }
 
 void freeCode(compiled_code_t* compiledCode){
-    uint32_t i;
+    uint64_t i;
     for(i = 0; i < compiledCode->length; i++){
-        compiledCode->length = 0;
+        compiledCode->instructions[i].times = 0;
+        compiledCode->instructions[i].instruction = INSTRUCTION_UNDEFINED;
     }
     free(compiledCode->instructions);
+    compiledCode->length = 0;
 }
 
 char* codeToString(const compiled_code_t *compiledCode){
@@ -84,7 +91,7 @@ uint8_t writeCodeToFile(const compiled_code_t *compiledCode, const char *fileNam
         return GENERAL_ERROR;
     }
 
-    uint32_t code_len = compiledCode->length;
+    uint64_t code_len = compiledCode->length;
     if(code_len <= 0){return 0;} //Nothing to write
 
     FILE *ptr;
@@ -127,6 +134,5 @@ uint8_t readCodeFromFile(compiled_code_t *compiledCode, const char *fileName){
         compiledCode->instructions[i].times++;
     }
     
-    printf("length: %d, loaded code: %s", compiledCode->length, codeToString(compiledCode));
     return 0;
 }

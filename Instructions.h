@@ -14,6 +14,8 @@
 #define INSTRUCTION_OUTPUT      7
 #define INSTRUCTION_NOP         8
 #define INSTRUCTION_UNDEFINED   9
+
+//Debug
 #define INSTRUCTION_BREAK      10
 
 typedef struct {
@@ -22,7 +24,7 @@ typedef struct {
 } instruction_t;
 
 typedef struct {
-    uint32_t length;
+    uint64_t length;
     instruction_t *instructions;
 } compiled_code_t;
 

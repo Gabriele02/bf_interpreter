@@ -1,5 +1,5 @@
 #ifndef _BFINTERPRETER
-#define BFINTERPRETER
+#define _BFINTERPRETER
 
 #include "Instructions.h"
 #include "Errors.h"

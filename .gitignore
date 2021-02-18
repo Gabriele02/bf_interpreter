@@ -1,2 +1,6 @@
 bin/
 obj/
+*.bf
+*.bfc
+*.txt
+.vscode/

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 #include "../DynamicArray.h"
 #include "BfVM.h"
 
@@ -23,7 +24,23 @@ int main(int argc, char **argv){
         readCodeFromFile(code, argv[1]);
         
         if(code->length <= 0){return EXECUTION_END;}
-        return execute(code);
+        #ifdef DEBUGGING_MODE
+        clock_t start = clock();
+        #endif
+
+        int ret_code = execute(code);
+
+        #ifdef DEBUGGING_MODE
+        clock_t end = clock();
+        double elapsed_time = (double)(end - start) / CLOCKS_PER_SEC;
+        printf("Elapsed CPU time: %f", elapsed_time);
+        #endif
+        /*
+        1) 16.6
+        2) 16.6
+        3) 16.7
+        */
+        return ret_code;
     }
     return EXECUTION_END;
 }
@@ -48,31 +65,24 @@ int execute(const compiled_code_t *code){
         inst = code->instructions[instIndex];
         switch(inst.instruction){
             default:
-                instIndex++;
                 break;
             case INSTRUCTION_INC_CELL:
                 mem[memIndex] += inst.times;
-                instIndex += inst.times;
                 break;
             case INSTRUCTION_DEC_CELL:
                 mem[memIndex] -= inst.times;
-                instIndex += inst.times;
                 break;
             case INSTRUCTION_DEC_MEM:
                 memIndex -= inst.times;
-                instIndex += inst.times;
                 break;
             case INSTRUCTION_INC_MEM:
                 memIndex += inst.times;
-                instIndex += inst.times;
                 break;
             case INSTRUCTION_OUTPUT:
                 putchar((char)mem[memIndex]);
-                instIndex++;
                 break;
             case INSTRUCTION_INPUT:
                 scanf(" %c", (char *)&mem[memIndex]);
-                instIndex++;
                 break;
             case INSTRUCTION_START_LOOP:
                 if(mem[memIndex] == 0){
@@ -88,7 +98,6 @@ int execute(const compiled_code_t *code){
                     }
                     DynamicArrayAdd(&openB, depth++, instIndex);
                 }
-                instIndex++;
                 break;
             case INSTRUCTION_END_LOOP:
                 if(mem[memIndex] != 0){
@@ -103,12 +112,9 @@ int execute(const compiled_code_t *code){
                         return MISSING_OPEN_BRACKET;
                     }
                 }
-                instIndex++;
                 break;
-                /*TODO
-                Add other missing instructions
-                */
         }
+        instIndex++;
     }
     freeDynamicArray(&openB);
     return EXECUTION_OK;
@@ -150,7 +156,7 @@ int debug(const char *debugCommand, size_t instLen){
 /*
 Prints memory's content at +/- 5 from the memory pointer
 */
-/*void printMem(){
+void printMem(){
     int s = (int)memIndex - 5;
     int e = (int)memIndex + 5;
     s = s > 0 ? s : 0;
@@ -162,7 +168,7 @@ Prints memory's content at +/- 5 from the memory pointer
             printf(" <--");
         printf("\n");
     }
-}*/
+}
 
 /*
 Finds the corresponding closing bracket index

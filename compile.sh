@@ -62,6 +62,6 @@ gcc ../../obj/Instructions.o ../../obj/DynamicArray.o ../../obj/compiler/BfCompi
 
 #compile vm
 cd "$INITIALDIR"/obj/vm
-gcc ../../Instructions.c ../../DynamicArray.c ../../bfvm/BfVM.c -c
+gcc -O3 ../../Instructions.c ../../DynamicArray.c ../../bfvm/BracesCache.c ../../bfvm/BfVM.c -c
 cd "$INITIALDIR"/bin/vm
-gcc ../../obj/Instructions.o ../../obj/DynamicArray.o ../../obj/vm/BfVM.o -o BfVM
+gcc -O3 ../../obj/Instructions.o ../../obj/DynamicArray.o ../../obj/vm/BracesCache.o ../../obj/vm/BfVM.o -o BfVM

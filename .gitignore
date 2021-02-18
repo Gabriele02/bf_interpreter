@@ -4,3 +4,4 @@ obj/
 *.bfc
 *.txt
 .vscode/
+*.log

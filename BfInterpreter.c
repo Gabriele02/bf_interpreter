@@ -23,6 +23,10 @@ int main(int argc, char **argv){
                 purify(toExec);
            }while(!toExec[0]);
             returnCode = execute(toExec);
+            /*
+            TODO:
+                Add command to clear memory
+            */
         }while(returnCode);/*continue until an exit command is detected*/
         return EXECUTION_END;
     }else{

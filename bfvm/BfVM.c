@@ -4,9 +4,16 @@
 #include <stdbool.h>
 #include <time.h>
 #include "../DynamicArray.h"
+#include "BracesCache.h"
 #include "BfVM.h"
 
-unsigned char mem[MEM_SIZE] = {'\0'}; /*0 to 255*/
+#ifdef DEBUGGING_MODE
+uint64_t cache_hits = 0;
+uint64_t cache_misses = 0;
+#endif
+
+unsigned char mem[MEM_SIZE]; /*0 to 255*/
+long long closing_cache[MAX_CACHE_SIZE];
 long int memIndex = 0;
 char last_exec = '\0';
 
@@ -33,12 +40,35 @@ int main(int argc, char **argv){
         #ifdef DEBUGGING_MODE
         clock_t end = clock();
         double elapsed_time = (double)(end - start) / CLOCKS_PER_SEC;
-        printf("Elapsed CPU time: %f", elapsed_time);
+        printf(
+        "\n"
+        "----DEBUG----\n"
+        "CPU time: %f\n"
+
+        "Cache hits: %lld\n"
+        "Cache hits perc: %f%%\n"
+        "Cache misses %lld\n"
+        "Cache misses perc: %f%%",
+        elapsed_time,
+        cache_hits, ((double)cache_hits / (double)(cache_hits + cache_misses)) * 100.0f, cache_misses, ((double)cache_misses / (double)(cache_hits + cache_misses)) * 100.0f
+        );
+
         #endif
         /*
+        Without cache
         1) 16.6
         2) 16.6
         3) 16.7
+
+        With cache
+        1) 14.4
+        2) 14.4
+        3) 14.7
+
+        With cache + O3
+        1) 8.5
+        2) 8.5
+        3) 8.5
         */
         return ret_code;
     }
@@ -58,8 +88,14 @@ Return:
 int execute(const compiled_code_t *code){
     instruction_t inst;
     long long instIndex = 0;
+    
     DynamicArray openB;
     DynamicArrayInit(&openB, -1);
+
+    braces_cache_t bracesCache;
+    bracesCache.cache = calloc(MAX_CACHE_SIZE, sizeof(long long));
+    InitCache(&bracesCache);
+    
     long depth = 0;
     while(instIndex < code->length){
         inst = code->instructions[instIndex];
@@ -86,7 +122,7 @@ int execute(const compiled_code_t *code){
                 break;
             case INSTRUCTION_START_LOOP:
                 if(mem[memIndex] == 0){
-                    instIndex = findClosing(code, instIndex);
+                    instIndex = findClosing(code, instIndex, &bracesCache);
                      if(instIndex < 0 || instIndex >= code->length){
                         printf("] expected!!");
                         return MISSING_CLOSE_BRACKET;
@@ -177,7 +213,18 @@ I: textLen length of text
 I: openPos position of the opening bracket
 return: Index of the closing bracket, if found, MISSING_CLOSE_BRACKET otherwise
 */
-int findClosing(const compiled_code_t *code, int openPos) {
+int findClosing(const compiled_code_t *code, int openPos, braces_cache_t *cache) {
+
+    /*Search it in the cache*/
+    long long fromCache = cacheGet(cache, openPos);
+    if(fromCache != -1){
+        #ifdef DEBUGGING_MODE
+        cache_hits += 1;
+        #endif
+        return fromCache;
+    }
+    
+    /*Otherwise find it normally*/
     uint32_t codeLen = code->length;
     int closePos = openPos;
     int counter = 1;
@@ -192,5 +239,10 @@ int findClosing(const compiled_code_t *code, int openPos) {
             counter--;
         }
     }
+    /*Save it in the cache*/
+    cacheAdd(cache, openPos, closePos);
+    #ifdef DEBUGGING_MODE
+    cache_misses += 1;
+    #endif
     return closePos;
 }

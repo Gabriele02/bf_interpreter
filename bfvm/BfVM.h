@@ -1,6 +1,7 @@
 #ifndef _BFINTERPRETER
 #define BFINTERPRETER
 
+#include "BracesCache.h"
 #include "../Instructions.h"
 #include "../Errors.h"
 
@@ -9,6 +10,6 @@
 
 void printMem    ();
 /*int  debug       (const char*, size_t);*/
-int  findClosing (const compiled_code_t*, int);
+int  findClosing (const compiled_code_t*, int, braces_cache_t*);
 int  execute     (const compiled_code_t*);
 #endif
